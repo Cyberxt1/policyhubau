@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Navy Trust palette */
+    --background: 220 33% 97%;
+    --foreground: 224 60% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 60% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 60% 12%;
+
+    --primary: 224 60% 15%;        /* deep navy #0f1b3d */
+    --primary-foreground: 220 33% 97%;
+
+    --secondary: 213 53% 27%;      /* navy mid #1e3a5f */
+    --secondary-foreground: 220 33% 97%;
+
+    --accent: 209 47% 43%;         /* steel blue #3b6fa0 */
+    --accent-foreground: 220 33% 97%;
+
+    --muted: 218 31% 92%;
+    --muted-foreground: 220 18% 38%;
+
+    --surface: 218 32% 95%;        /* #e8edf3 */
+    --gold: 42 55% 54%;            /* understated gold for emphasis */
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 218 25% 86%;
+    --input: 218 25% 86%;
+    --ring: 213 53% 27%;
+
+    --radius: 0.375rem;
+
+    --gradient-hero: linear-gradient(140deg, hsl(224 60% 10%) 0%, hsl(213 53% 22%) 60%, hsl(209 47% 35%) 100%);
+    --gradient-band: linear-gradient(180deg, hsl(220 33% 97%) 0%, hsl(218 32% 95%) 100%);
+    --shadow-elevated: 0 24px 60px -28px hsl(224 60% 15% / 0.35);
+    --shadow-soft: 0 8px 24px -12px hsl(224 60% 15% / 0.18);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  ::selection { background: hsl(var(--accent) / 0.25); }
+}
+
+@layer components {
+  .container-narrow { @apply mx-auto w-full max-w-6xl px-6 md:px-10; }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-accent font-medium;
+  }
+  .rule {
+    @apply h-px w-full bg-border;
+  }
+  .num-chip {
+    @apply inline-flex h-7 min-w-7 items-center justify-center rounded-full border border-accent/40 px-2 text-xs font-medium text-accent;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition-property: opacity, transform;
+  transition-duration: 700ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-reveal-fade {
+  transform: translateY(28px);
+}
+
+.scroll-reveal-pop {
+  transform: translateY(22px) scale(0.94);
+}
+
+.scroll-reveal-bounce {
+  transform: translateY(34px) scale(0.92);
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.scroll-reveal-bounce.is-visible {
+  animation: reveal-bounce 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.marquee-strip {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 290s linear infinite;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding-right: 2rem;
+  color: hsl(var(--primary) / 0.85);
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.marquee-item::after {
+  content: "•";
+  color: hsl(var(--accent));
+}
+
+@keyframes reveal-bounce {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .scroll-reveal-fade,
+  .scroll-reveal-pop,
+  .scroll-reveal-bounce {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+
+  .marquee-track {
+    animation: none;
+  }
+}
