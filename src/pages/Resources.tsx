@@ -40,10 +40,10 @@ const Resources = () => {
 
       <section className="border-b border-border">
         <div className="container-narrow py-20 max-w-3xl">
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          {/* <p className="text-lg text-muted-foreground leading-relaxed">
             Use these materials when you are learning, writing, or preparing for a competition.
             They are here to make the work easier to understand.
-          </p>
+          </p> */}
         </div>
       </section>
 
