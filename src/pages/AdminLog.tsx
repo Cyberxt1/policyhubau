@@ -24,6 +24,17 @@ import {
 } from "@/lib/teamPairing";
 
 const AdminLog = () => {
+  type AdminAction =
+    | "create-set"
+    | "generate"
+    | "save-set"
+    | "publish-set"
+    | "delete-set"
+    | "add-custom-team"
+    | "save-content"
+    | "remove-team"
+    | null;
+
   const [username, setUsername] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [message, setMessage] = useState("");
@@ -31,6 +42,7 @@ const AdminLog = () => {
   const [selectedSetId, setSelectedSetId] = useState<string | null>(readLocalTeamPairingData().activeSetId);
   const [isSyncing, setIsSyncing] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeAction, setActiveAction] = useState<AdminAction>(null);
   const [newSetName, setNewSetName] = useState("");
   const [customTeamName, setCustomTeamName] = useState("");
   const [customTeamMembers, setCustomTeamMembers] = useState("");
@@ -73,9 +85,14 @@ const AdminLog = () => {
     [selectedSet],
   );
 
-  const persistData = async (nextData: TeamPairingData, successMessage: string) => {
+  const persistData = async (
+    nextData: TeamPairingData,
+    successMessage: string,
+    action: Exclude<AdminAction, null>,
+  ) => {
     setData(nextData);
     setIsSaving(true);
+    setActiveAction(action);
 
     try {
       await saveTeamPairingData(nextData);
@@ -86,6 +103,7 @@ const AdminLog = () => {
       setMessage(fallbackMessage);
     } finally {
       setIsSaving(false);
+      setActiveAction(null);
     }
   };
 
@@ -152,9 +170,9 @@ const AdminLog = () => {
       groups: createGroups(students, current.groupMode),
     }));
 
-    void persistData(
-      nextData,
-      `${selectedSet.name} grouped and pushed to Firebase for ${students.length} student(s).`,
+    setData(nextData);
+    setMessage(
+      `${selectedSet.name} generated for ${students.length} student(s). Click "Publish this set" to push it to Firestore.`,
     );
   };
 
@@ -163,11 +181,11 @@ const AdminLog = () => {
       return;
     }
 
-    await persistData(data, `${selectedSet.name} saved to Firebase.`);
+    await persistData(data, `${selectedSet.name} saved to Firebase.`, "save-set");
   };
 
   const handleSaveContent = async () => {
-    await persistData(data, "Team pairing page content saved.");
+    await persistData(data, "Team pairing page content saved.", "save-content");
   };
 
   const handlePublishSelectedSet = async () => {
@@ -175,12 +193,13 @@ const AdminLog = () => {
       return;
     }
 
+    const latestData = buildNextDataForSelectedSet((current) => current);
     const nextData = {
-      ...data,
+      ...latestData,
       activeSetId: selectedSet.id,
     };
 
-    await persistData(nextData, `${selectedSet.name} is now the published team set.`);
+    await persistData(nextData, `${selectedSet.name} is now the published team set.`, "publish-set");
   };
 
   const handleCreateNewSet = async () => {
@@ -192,7 +211,7 @@ const AdminLog = () => {
 
     setSelectedSetId(nextSet.id);
     setNewSetName("");
-    await persistData(nextData, `${nextSet.name} created without changing the published teams.`);
+    await persistData(nextData, `${nextSet.name} created without changing the published teams.`, "create-set");
   };
 
   const handleDeleteSelectedSet = async () => {
@@ -210,7 +229,7 @@ const AdminLog = () => {
     };
 
     setSelectedSetId(fallbackSetId);
-    await persistData(nextData, `${selectedSet.name} deleted.`);
+    await persistData(nextData, `${selectedSet.name} deleted.`, "delete-set");
   };
 
   const handleClearTeams = () => {
@@ -251,7 +270,7 @@ const AdminLog = () => {
 
     setCustomTeamName("");
     setCustomTeamMembers("");
-    void persistData(nextData, "Custom team added and saved to Firebase.");
+    void persistData(nextData, "Custom team added and saved to Firebase.", "add-custom-team");
   };
 
   const updateGroup = (groupId: string, updater: (group: Group) => Group) => {
@@ -266,7 +285,7 @@ const AdminLog = () => {
       ...current,
       groups: current.groups.filter((group) => group.id !== groupId),
     }));
-    void persistData(nextData, "Team removed and synced to Firebase.");
+    void persistData(nextData, "Team removed and synced to Firebase.", "remove-team");
   };
 
   if (!isUnlocked) {
@@ -352,8 +371,8 @@ const AdminLog = () => {
                     placeholder="New team set name"
                   />
                   <Button type="button" onClick={handleCreateNewSet} disabled={isSaving}>
-                    {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Plus size={16} />}
-                    {isSaving ? "Saving..." : "Create new set"}
+                    {activeAction === "create-set" ? <LoaderCircle size={16} className="animate-spin" /> : <Plus size={16} />}
+                    {activeAction === "create-set" ? "Saving..." : "Create new set"}
                   </Button>
                 </div>
 
@@ -453,9 +472,9 @@ const AdminLog = () => {
                       <input type="file" accept=".csv,.txt" className="hidden" onChange={handleFileUpload} />
                     </label>
 
-                    <Button type="button" onClick={handleGenerateTeams}>
-                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Shuffle size={16} />}
-                      {isSaving ? "Saving..." : "Generate teams"}
+                    <Button type="button" onClick={handleGenerateTeams} disabled={isSaving}>
+                      {activeAction === "generate" ? <LoaderCircle size={16} className="animate-spin" /> : <Shuffle size={16} />}
+                      {activeAction === "generate" ? "Saving..." : "Generate teams"}
                     </Button>
 
                     <Button type="button" variant="outline" onClick={handleClearTeams}>
@@ -466,16 +485,16 @@ const AdminLog = () => {
 
                   <div className="flex flex-wrap gap-3">
                     <Button type="button" onClick={handleSaveSelectedSet} disabled={isSaving}>
-                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Save size={16} />}
-                      {isSaving ? "Saving..." : "Save set"}
+                      {activeAction === "save-set" ? <LoaderCircle size={16} className="animate-spin" /> : <Save size={16} />}
+                      {activeAction === "save-set" ? "Saving..." : "Save set"}
                     </Button>
                     <Button type="button" variant="outline" onClick={handlePublishSelectedSet} disabled={isSaving}>
-                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Users size={16} />}
-                      {isSaving ? "Saving..." : "Publish this set"}
+                      {activeAction === "publish-set" ? <LoaderCircle size={16} className="animate-spin" /> : <Users size={16} />}
+                      {activeAction === "publish-set" ? "Saving..." : "Publish this set"}
                     </Button>
                     <Button type="button" variant="outline" onClick={handleDeleteSelectedSet} disabled={isSaving}>
-                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Trash2 size={16} />}
-                      {isSaving ? "Saving..." : "Delete set"}
+                      {activeAction === "delete-set" ? <LoaderCircle size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                      {activeAction === "delete-set" ? "Saving..." : "Delete set"}
                     </Button>
                   </div>
                 </CardContent>
@@ -488,7 +507,7 @@ const AdminLog = () => {
               <CardHeader>
                 <CardTitle className="font-display text-2xl text-primary">Saved summary</CardTitle>
                 <CardDescription>
-                  The public page always reads the currently published team set from Firebase.
+                  The public page only reads the currently published team set from Firebase.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 text-sm text-muted-foreground">
@@ -499,7 +518,9 @@ const AdminLog = () => {
                 <div className="rounded-sm border border-border bg-surface px-4 py-4">
                   <p className="font-medium text-primary">Published team set</p>
                   <p className="mt-1">
-                    {getSelectedTeamSet(data)?.name ?? "No set selected"}
+                    {data.activeSetId
+                      ? data.teamSets.find((teamSet) => teamSet.id === data.activeSetId)?.name ?? "No set selected"
+                      : "Nothing published yet"}
                   </p>
                 </div>
                 <div className="rounded-sm border border-border bg-surface px-4 py-4">
@@ -532,9 +553,9 @@ const AdminLog = () => {
                   placeholder={"Member name, phone number\nAnother member, 08030000004"}
                   className="min-h-[180px]"
                 />
-                <Button type="button" onClick={handleAddCustomTeam}>
-                  {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Plus size={16} />}
-                  {isSaving ? "Saving..." : "Add custom team"}
+                <Button type="button" onClick={handleAddCustomTeam} disabled={isSaving}>
+                  {activeAction === "add-custom-team" ? <LoaderCircle size={16} className="animate-spin" /> : <Plus size={16} />}
+                  {activeAction === "add-custom-team" ? "Saving..." : "Add custom team"}
                 </Button>
               </CardContent>
             </Card>
@@ -691,8 +712,8 @@ const AdminLog = () => {
 
           <div className="mt-6">
             <Button type="button" onClick={handleSaveContent} disabled={isSaving}>
-              {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Save size={16} />}
-              {isSaving ? "Saving..." : "Save public page content"}
+              {activeAction === "save-content" ? <LoaderCircle size={16} className="animate-spin" /> : <Save size={16} />}
+              {activeAction === "save-content" ? "Saving..." : "Save public page content"}
             </Button>
           </div>
         </div>
@@ -741,9 +762,9 @@ const AdminLog = () => {
                       }
                       className="min-h-[180px]"
                     />
-                    <Button type="button" variant="outline" onClick={() => removeGroup(group.id)}>
-                      <Trash2 size={16} />
-                      Remove team
+                    <Button type="button" variant="outline" onClick={() => removeGroup(group.id)} disabled={isSaving}>
+                      {activeAction === "remove-team" ? <LoaderCircle size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                      {activeAction === "remove-team" ? "Saving..." : "Remove team"}
                     </Button>
                   </CardContent>
                 </Card>

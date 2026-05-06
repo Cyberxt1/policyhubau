@@ -320,7 +320,15 @@ export const getSelectedTeamSet = (data: TeamPairingData, setId?: string | null)
   return data.teamSets.find((teamSet) => teamSet.id === targetId) ?? data.teamSets[0] ?? null;
 };
 
-export const getActiveGroups = (data: TeamPairingData) => getSelectedTeamSet(data)?.groups ?? [];
+export const getPublishedTeamSet = (data: TeamPairingData) => {
+  if (!data.activeSetId) {
+    return null;
+  }
+
+  return data.teamSets.find((teamSet) => teamSet.id === data.activeSetId) ?? null;
+};
+
+export const getActiveGroups = (data: TeamPairingData) => getPublishedTeamSet(data)?.groups ?? [];
 
 export const findGroupByNumber = (groups: Group[], lookupNumber: string) => {
   const normalized = normalizeNumber(lookupNumber);

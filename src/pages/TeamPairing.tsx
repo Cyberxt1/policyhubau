@@ -18,7 +18,7 @@ import {
   findGroupByNumber,
   findStudentInGroup,
   getActiveGroups,
-  getSelectedTeamSet,
+  getPublishedTeamSet,
   getWhatsappLink,
   loadTeamPairingData,
   normalizeNumber,
@@ -60,7 +60,7 @@ const TeamPairing = () => {
   }, []);
 
   const activeGroups = useMemo(() => getActiveGroups(data), [data]);
-  const activeSet = useMemo(() => getSelectedTeamSet(data), [data]);
+  const activeSet = useMemo(() => getPublishedTeamSet(data), [data]);
 
   const currentGroup = useMemo(() => findGroupByNumber(activeGroups, lookupNumber), [activeGroups, lookupNumber]);
 
@@ -177,7 +177,7 @@ const TeamPairing = () => {
 
                 {!isSyncing && !isCheckingTeam && searchAttempted && !currentGroup && (
                   <div className="rounded-sm border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
-                    {data.content.notFoundMessage}
+                    {activeSet ? data.content.notFoundMessage : "No team set has been published yet. Please check again later."}
                   </div>
                 )}
 
@@ -228,9 +228,9 @@ const TeamPairing = () => {
 
           {currentGroup && currentStudent && (
             <div className="space-y-3">
-              <div className="rounded-sm border border-accent bg-surface px-4 py-3">
-                <p className="font-display text-lg text-primary">{currentGroup.id}</p>
-                <p className="mt-1 text-sm text-muted-foreground">
+              <div className="rounded-sm border border-[#123B7A] bg-[#123B7A] px-4 py-3 text-white shadow-sm">
+                <p className="font-display text-lg font-semibold text-white">{currentGroup.id}</p>
+                <p className="mt-1 text-sm text-white/85">
                   You are paired with {currentGroup.members.length - 1} teammate(s).
                 </p>
               </div>
