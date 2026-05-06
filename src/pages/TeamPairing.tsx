@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Users } from "lucide-react";
+import { LoaderCircle, Search, Users } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  fetchTeamPairingDataFromFirestore,
+  findGroupByNumber,
+  findStudentInGroup,
   getActiveGroups,
   getSelectedTeamSet,
   getWhatsappLink,
@@ -30,6 +34,7 @@ const TeamPairing = () => {
   const [searchAttempted, setSearchAttempted] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(true);
+  const [isCheckingTeam, setIsCheckingTeam] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -57,34 +62,43 @@ const TeamPairing = () => {
   const activeGroups = useMemo(() => getActiveGroups(data), [data]);
   const activeSet = useMemo(() => getSelectedTeamSet(data), [data]);
 
-  const currentGroup = useMemo(() => {
-    const normalized = normalizeNumber(lookupNumber);
+  const currentGroup = useMemo(() => findGroupByNumber(activeGroups, lookupNumber), [activeGroups, lookupNumber]);
 
-    if (!normalized) {
-      return null;
-    }
+  const currentStudent = useMemo(
+    () => findStudentInGroup(currentGroup, lookupNumber),
+    [currentGroup, lookupNumber],
+  );
 
-    return activeGroups.find((group) =>
-      group.members.some((member) => normalizeNumber(member.number) === normalized),
-    );
-  }, [activeGroups, lookupNumber]);
-
-  const currentStudent = useMemo(() => {
-    if (!currentGroup) {
-      return null;
-    }
-
-    return currentGroup.members.find(
-      (member) => normalizeNumber(member.number) === normalizeNumber(lookupNumber),
-    ) ?? null;
-  }, [currentGroup, lookupNumber]);
-
-  const handleCheckTeam = () => {
+  const handleCheckTeam = async () => {
     setSearchAttempted(true);
+    setIsCheckingTeam(true);
 
-    if (currentGroup && currentStudent) {
-      setSelectedStudent(currentStudent);
-      setDialogOpen(true);
+    try {
+      const freshData = await fetchTeamPairingDataFromFirestore();
+      setData(freshData);
+
+      const freshGroups = getActiveGroups(freshData);
+      const freshGroup = findGroupByNumber(freshGroups, lookupNumber);
+      const freshStudent = findStudentInGroup(freshGroup, lookupNumber);
+
+      if (freshGroup && freshStudent) {
+        setSelectedStudent(freshStudent);
+        setDialogOpen(true);
+        return;
+      }
+
+      setSelectedStudent(null);
+      setDialogOpen(false);
+    } catch {
+      if (currentGroup && currentStudent) {
+        setSelectedStudent(currentStudent);
+        setDialogOpen(true);
+      } else {
+        setSelectedStudent(null);
+        setDialogOpen(false);
+      }
+    } finally {
+      setIsCheckingTeam(false);
     }
   };
 
@@ -107,11 +121,16 @@ const TeamPairing = () => {
                 <CardDescription>{data.content.lookupLead}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
-                {activeSet && (
+                {isSyncing ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-5 w-40" />
+                    <Skeleton className="h-16 w-full" />
+                  </div>
+                ) : activeSet ? (
                   <div className="rounded-sm border border-border bg-surface px-4 py-3 text-sm text-muted-foreground">
                     Viewing published set: <span className="font-medium text-primary">{activeSet.name}</span>
                   </div>
-                )}
+                ) : null}
 
                 <div className="space-y-3">
                   <label className="block text-sm font-medium text-primary">
@@ -122,17 +141,31 @@ const TeamPairing = () => {
                       value={lookupNumber}
                       onChange={(event) => setLookupNumber(event.target.value)}
                       placeholder={data.content.searchPlaceholder}
+                      disabled={isCheckingTeam}
                     />
-                    <Button type="button" onClick={handleCheckTeam}>
-                      <Search size={16} />
-                      Check team
+                    <Button type="button" onClick={handleCheckTeam} disabled={isCheckingTeam}>
+                      {isCheckingTeam ? <LoaderCircle size={16} className="animate-spin" /> : <Search size={16} />}
+                      {isCheckingTeam ? "Checking..." : "Check team"}
                     </Button>
                   </div>
                 </div>
 
                 {isSyncing && (
+                  <div className="rounded-sm border border-dashed border-border px-4 py-6">
+                    <div className="space-y-3">
+                      <Skeleton className="h-4 w-28" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-10 w-36" />
+                    </div>
+                  </div>
+                )}
+
+                {!isSyncing && isCheckingTeam && (
                   <div className="rounded-sm border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
-                    Syncing latest team data...
+                    <div className="flex items-center gap-2 text-primary">
+                      <LoaderCircle size={16} className="animate-spin" />
+                      Fetching your latest team from Firebase...
+                    </div>
                   </div>
                 )}
 
@@ -142,13 +175,13 @@ const TeamPairing = () => {
                   </div>
                 )}
 
-                {!isSyncing && searchAttempted && !currentGroup && (
+                {!isSyncing && !isCheckingTeam && searchAttempted && !currentGroup && (
                   <div className="rounded-sm border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
                     {data.content.notFoundMessage}
                   </div>
                 )}
 
-                {currentGroup && currentStudent && (
+                {!isCheckingTeam && currentGroup && currentStudent && (
                   <div className="rounded-sm border border-border bg-surface p-5">
                     <div className="flex items-center gap-2 text-primary">
                       <Users size={18} className="text-accent" />

@@ -322,6 +322,30 @@ export const getSelectedTeamSet = (data: TeamPairingData, setId?: string | null)
 
 export const getActiveGroups = (data: TeamPairingData) => getSelectedTeamSet(data)?.groups ?? [];
 
+export const findGroupByNumber = (groups: Group[], lookupNumber: string) => {
+  const normalized = normalizeNumber(lookupNumber);
+
+  if (!normalized) {
+    return null;
+  }
+
+  return groups.find((group) =>
+    group.members.some((member) => normalizeNumber(member.number) === normalized),
+  ) ?? null;
+};
+
+export const findStudentInGroup = (group: Group | null, lookupNumber: string) => {
+  if (!group) {
+    return null;
+  }
+
+  const normalized = normalizeNumber(lookupNumber);
+
+  return group.members.find(
+    (member) => normalizeNumber(member.number) === normalized,
+  ) ?? null;
+};
+
 const normalizeTeamSet = (teamSet: Partial<TeamSet>, fallbackIndex: number): TeamSet => ({
   id: teamSet.id ?? `team-set-${fallbackIndex + 1}`,
   name: teamSet.name ?? `Team Set ${fallbackIndex + 1}`,
@@ -507,6 +531,18 @@ const fetchFirestoreDocument = async () => {
   return response.json() as Promise<{ fields?: Record<string, FirestoreValue> }>;
 };
 
+export const fetchTeamPairingDataFromFirestore = async () => {
+  const remoteDocument = await fetchFirestoreDocument();
+
+  if (!remoteDocument?.fields?.payload) {
+    return normalizeData(defaultTeamPairingData);
+  }
+
+  return normalizeData(
+    fromFirestoreValue(remoteDocument.fields.payload) as Partial<TeamPairingData>,
+  );
+};
+
 const writeFirestoreDocument = async (data: TeamPairingData) => {
   const response = await fetch(FIRESTORE_DOCUMENT_URL, {
     method: "PATCH",
@@ -529,16 +565,7 @@ export const loadTeamPairingData = async () => {
   const localData = readLocalTeamPairingData();
 
   try {
-    const remoteDocument = await fetchFirestoreDocument();
-
-    if (!remoteDocument?.fields?.payload) {
-      return localData;
-    }
-
-    const remoteData = normalizeData(
-      fromFirestoreValue(remoteDocument.fields.payload) as Partial<TeamPairingData>,
-    );
-
+    const remoteData = await fetchTeamPairingDataFromFirestore();
     saveLocalTeamPairingData(remoteData);
     return remoteData;
   } catch {

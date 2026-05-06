@@ -1,10 +1,11 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { LockKeyhole, Plus, Save, Shuffle, Trash2, Upload, Users } from "lucide-react";
+import { LoaderCircle, LockKeyhole, Plus, Save, Shuffle, Trash2, Upload, Users } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import {
   createEmptyTeamSet,
@@ -88,22 +89,28 @@ const AdminLog = () => {
     }
   };
 
-  const updateSelectedSet = (updater: (current: TeamSet) => TeamSet) => {
-    if (!selectedSet) {
-      return;
+  const buildNextDataForSelectedSet = (updater: (current: TeamSet) => TeamSet) => {
+    if (!selectedSetId) {
+      return data;
     }
 
-    setData((currentData) => ({
-      ...currentData,
-      teamSets: currentData.teamSets.map((teamSet) =>
-        teamSet.id === selectedSet.id
+    return {
+      ...data,
+      teamSets: data.teamSets.map((teamSet) =>
+        teamSet.id === selectedSetId
           ? {
               ...updater(teamSet),
               updatedAt: new Date().toISOString(),
             }
           : teamSet,
       ),
-    }));
+    };
+  };
+
+  const updateSelectedSet = (updater: (current: TeamSet) => TeamSet) => {
+    const nextData = buildNextDataForSelectedSet(updater);
+    setData(nextData);
+    return nextData;
   };
 
   const handleUnlock = () => {
@@ -140,11 +147,15 @@ const AdminLog = () => {
       return;
     }
 
-    updateSelectedSet((current) => ({
+    const nextData = buildNextDataForSelectedSet((current) => ({
       ...current,
       groups: createGroups(students, current.groupMode),
     }));
-    setMessage(`Generated ${selectedSet.groupMode === "mixed" ? "mixed" : `groups of ${selectedSet.groupMode}`} for ${students.length} student(s). Save when you're ready.`);
+
+    void persistData(
+      nextData,
+      `${selectedSet.name} grouped and pushed to Firebase for ${students.length} student(s).`,
+    );
   };
 
   const handleSaveSelectedSet = async () => {
@@ -227,7 +238,7 @@ const AdminLog = () => {
       return;
     }
 
-    updateSelectedSet((current) => ({
+    const nextData = buildNextDataForSelectedSet((current) => ({
       ...current,
       groups: [
         ...current.groups,
@@ -240,7 +251,7 @@ const AdminLog = () => {
 
     setCustomTeamName("");
     setCustomTeamMembers("");
-    setMessage("Custom team added. Save to store it for everyone.");
+    void persistData(nextData, "Custom team added and saved to Firebase.");
   };
 
   const updateGroup = (groupId: string, updater: (group: Group) => Group) => {
@@ -251,11 +262,11 @@ const AdminLog = () => {
   };
 
   const removeGroup = (groupId: string) => {
-    updateSelectedSet((current) => ({
+    const nextData = buildNextDataForSelectedSet((current) => ({
       ...current,
       groups: current.groups.filter((group) => group.id !== groupId),
     }));
-    setMessage("Team removed. Save to sync this update.");
+    void persistData(nextData, "Team removed and synced to Firebase.");
   };
 
   if (!isUnlocked) {
@@ -321,11 +332,18 @@ const AdminLog = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
-                <div className="rounded-sm bg-surface px-4 py-3 text-sm text-muted-foreground">
-                  {isSyncing
-                    ? "Loading team sets from Firebase..."
-                    : message || "No update yet."}
-                </div>
+                {isSyncing ? (
+                  <div className="rounded-sm bg-surface px-4 py-4">
+                    <div className="space-y-3">
+                      <Skeleton className="h-4 w-40" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-sm bg-surface px-4 py-3 text-sm text-muted-foreground">
+                    {message || "No update yet."}
+                  </div>
+                )}
 
                 <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
                   <Input
@@ -334,8 +352,8 @@ const AdminLog = () => {
                     placeholder="New team set name"
                   />
                   <Button type="button" onClick={handleCreateNewSet} disabled={isSaving}>
-                    <Plus size={16} />
-                    Create new set
+                    {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Plus size={16} />}
+                    {isSaving ? "Saving..." : "Create new set"}
                   </Button>
                 </div>
 
@@ -436,8 +454,8 @@ const AdminLog = () => {
                     </label>
 
                     <Button type="button" onClick={handleGenerateTeams}>
-                      <Shuffle size={16} />
-                      Generate teams
+                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Shuffle size={16} />}
+                      {isSaving ? "Saving..." : "Generate teams"}
                     </Button>
 
                     <Button type="button" variant="outline" onClick={handleClearTeams}>
@@ -448,16 +466,16 @@ const AdminLog = () => {
 
                   <div className="flex flex-wrap gap-3">
                     <Button type="button" onClick={handleSaveSelectedSet} disabled={isSaving}>
-                      <Save size={16} />
-                      Save set
+                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Save size={16} />}
+                      {isSaving ? "Saving..." : "Save set"}
                     </Button>
                     <Button type="button" variant="outline" onClick={handlePublishSelectedSet} disabled={isSaving}>
-                      <Users size={16} />
-                      Publish this set
+                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Users size={16} />}
+                      {isSaving ? "Saving..." : "Publish this set"}
                     </Button>
                     <Button type="button" variant="outline" onClick={handleDeleteSelectedSet} disabled={isSaving}>
-                      <Trash2 size={16} />
-                      Delete set
+                      {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                      {isSaving ? "Saving..." : "Delete set"}
                     </Button>
                   </div>
                 </CardContent>
@@ -515,8 +533,8 @@ const AdminLog = () => {
                   className="min-h-[180px]"
                 />
                 <Button type="button" onClick={handleAddCustomTeam}>
-                  <Plus size={16} />
-                  Add custom team
+                  {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Plus size={16} />}
+                  {isSaving ? "Saving..." : "Add custom team"}
                 </Button>
               </CardContent>
             </Card>
@@ -673,8 +691,8 @@ const AdminLog = () => {
 
           <div className="mt-6">
             <Button type="button" onClick={handleSaveContent} disabled={isSaving}>
-              <Save size={16} />
-              Save public page content
+              {isSaving ? <LoaderCircle size={16} className="animate-spin" /> : <Save size={16} />}
+              {isSaving ? "Saving..." : "Save public page content"}
             </Button>
           </div>
         </div>
