@@ -13,30 +13,49 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  getActiveGroups,
+  getSelectedTeamSet,
   getWhatsappLink,
+  loadTeamPairingData,
   normalizeNumber,
-  readTeamPairingData,
+  readLocalTeamPairingData,
   Student,
   TeamPairingData,
 } from "@/lib/teamPairing";
 
 const TeamPairing = () => {
-  const [data, setData] = useState<TeamPairingData>(readTeamPairingData());
+  const [data, setData] = useState<TeamPairingData>(readLocalTeamPairingData());
   const [lookupNumber, setLookupNumber] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchAttempted, setSearchAttempted] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(true);
 
   useEffect(() => {
-    const syncData = () => {
-      setData(readTeamPairingData());
+    let cancelled = false;
+
+    const syncData = async () => {
+      const nextData = await loadTeamPairingData();
+
+      if (!cancelled) {
+        setData(nextData);
+        setIsSyncing(false);
+      }
     };
 
     syncData();
-    window.addEventListener("storage", syncData);
+    const intervalId = window.setInterval(syncData, 15000);
+    window.addEventListener("focus", syncData);
 
-    return () => window.removeEventListener("storage", syncData);
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener("focus", syncData);
+    };
   }, []);
+
+  const activeGroups = useMemo(() => getActiveGroups(data), [data]);
+  const activeSet = useMemo(() => getSelectedTeamSet(data), [data]);
 
   const currentGroup = useMemo(() => {
     const normalized = normalizeNumber(lookupNumber);
@@ -45,10 +64,10 @@ const TeamPairing = () => {
       return null;
     }
 
-    return data.groups.find((group) =>
+    return activeGroups.find((group) =>
       group.members.some((member) => normalizeNumber(member.number) === normalized),
     );
-  }, [data.groups, lookupNumber]);
+  }, [activeGroups, lookupNumber]);
 
   const currentStudent = useMemo(() => {
     if (!currentGroup) {
@@ -88,6 +107,12 @@ const TeamPairing = () => {
                 <CardDescription>{data.content.lookupLead}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
+                {activeSet && (
+                  <div className="rounded-sm border border-border bg-surface px-4 py-3 text-sm text-muted-foreground">
+                    Viewing published set: <span className="font-medium text-primary">{activeSet.name}</span>
+                  </div>
+                )}
+
                 <div className="space-y-3">
                   <label className="block text-sm font-medium text-primary">
                     Phone number
@@ -105,13 +130,19 @@ const TeamPairing = () => {
                   </div>
                 </div>
 
-                {!searchAttempted && (
+                {isSyncing && (
+                  <div className="rounded-sm border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
+                    Syncing latest team data...
+                  </div>
+                )}
+
+                {!isSyncing && !searchAttempted && (
                   <div className="rounded-sm border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
                     {data.content.emptyState}
                   </div>
                 )}
 
-                {searchAttempted && !currentGroup && (
+                {!isSyncing && searchAttempted && !currentGroup && (
                   <div className="rounded-sm border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
                     {data.content.notFoundMessage}
                   </div>

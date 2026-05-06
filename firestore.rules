@@ -1,0 +1,17 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /appData/teamPairing {
+      allow read: if true;
+
+      // Recommended production rule:
+      // only signed-in Firebase admins should publish team changes.
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

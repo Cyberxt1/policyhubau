@@ -25,13 +25,50 @@ export type TeamPairingContent = {
   helperText: string;
 };
 
-export type TeamPairingData = {
-  adminUsername: string;
+export type TeamSet = {
+  id: string;
+  name: string;
   groupMode: GroupMode;
   rawList: string;
   groups: Group[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TeamPairingData = {
+  adminUsername: string;
+  activeSetId: string | null;
+  teamSets: TeamSet[];
   content: TeamPairingContent;
 };
+
+type LegacyTeamPairingData = {
+  adminUsername?: string;
+  groupMode?: GroupMode;
+  rawList?: string;
+  groups?: Group[];
+  content?: Partial<TeamPairingContent>;
+};
+
+type FirestoreValue =
+  | { stringValue: string }
+  | { integerValue: string }
+  | { doubleValue: number }
+  | { booleanValue: boolean }
+  | { nullValue: null }
+  | { mapValue: { fields?: Record<string, FirestoreValue> } }
+  | { arrayValue: { values?: FirestoreValue[] } };
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDhAkCf7gQH6QJX3_Qf2z3kE7uToK8IAIw",
+  authDomain: "auphub-ng.firebaseapp.com",
+  projectId: "auphub-ng",
+  storageBucket: "auphub-ng.firebasestorage.app",
+  messagingSenderId: "820736296996",
+  appId: "1:820736296996:web:db30576eec9247a529b0b1",
+};
+
+const FIRESTORE_DOCUMENT_URL = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/appData/teamPairing?key=${firebaseConfig.apiKey}`;
 
 export const TEAM_PAIRING_STORAGE_KEY = "policy-hub-team-pairing";
 export const TEAM_PAIRING_ADMIN_USERNAME = "oluokundavid4";
@@ -51,11 +88,26 @@ export const defaultTeamPairingContent: TeamPairingContent = {
   helperText: "Once the Policy Hub team pairing has been published, enter your number here to see who you have been paired with.",
 };
 
+const nowIso = () => new Date().toISOString();
+
+export const createEmptyTeamSet = (name?: string): TeamSet => {
+  const timestamp = nowIso();
+
+  return {
+    id: `team-set-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    name: name?.trim() || `Team Set ${new Date().toLocaleDateString()}`,
+    groupMode: "2",
+    rawList: "",
+    groups: [],
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+};
+
 export const defaultTeamPairingData: TeamPairingData = {
   adminUsername: TEAM_PAIRING_ADMIN_USERNAME,
-  groupMode: "2",
-  rawList: "",
-  groups: [],
+  activeSetId: null,
+  teamSets: [createEmptyTeamSet("Current Teams")],
   content: defaultTeamPairingContent,
 };
 
@@ -260,41 +312,243 @@ export const parseStudents = (raw: string) => {
   return students;
 };
 
-export const readTeamPairingData = () => {
+export const membersToTextarea = (members: Student[]) =>
+  members.map((member) => `${member.name}, ${member.number}`).join("\n");
+
+export const getSelectedTeamSet = (data: TeamPairingData, setId?: string | null) => {
+  const targetId = setId ?? data.activeSetId ?? data.teamSets[0]?.id;
+  return data.teamSets.find((teamSet) => teamSet.id === targetId) ?? data.teamSets[0] ?? null;
+};
+
+export const getActiveGroups = (data: TeamPairingData) => getSelectedTeamSet(data)?.groups ?? [];
+
+const normalizeTeamSet = (teamSet: Partial<TeamSet>, fallbackIndex: number): TeamSet => ({
+  id: teamSet.id ?? `team-set-${fallbackIndex + 1}`,
+  name: teamSet.name ?? `Team Set ${fallbackIndex + 1}`,
+  groupMode: teamSet.groupMode ?? "2",
+  rawList: teamSet.rawList ?? "",
+  groups: (teamSet.groups ?? []).map((group, groupIndex) => ({
+    id: group?.id ?? `Team ${groupIndex + 1}`,
+    members: (group?.members ?? [])
+      .filter((member) => member?.name && member?.number)
+      .map((member) => ({
+        name: member.name,
+        number: normalizeNumber(member.number),
+      })),
+  })),
+  createdAt: teamSet.createdAt ?? nowIso(),
+  updatedAt: teamSet.updatedAt ?? nowIso(),
+});
+
+const normalizeData = (input?: Partial<TeamPairingData> & LegacyTeamPairingData): TeamPairingData => {
+  const legacySet =
+    !input?.teamSets?.length && (input?.groups?.length || input?.rawList)
+      ? normalizeTeamSet(
+          {
+            id: "legacy-current-teams",
+            name: "Current Teams",
+            groupMode: input.groupMode ?? "2",
+            rawList: input.rawList ?? "",
+            groups: input.groups ?? [],
+          },
+          0,
+        )
+      : null;
+
+  const fallbackSet =
+    input?.teamSets?.length || legacySet || defaultTeamPairingData.teamSets.length
+      ? undefined
+      : createEmptyTeamSet("Current Teams");
+
+  const teamSets =
+    input?.teamSets?.map((teamSet, index) => normalizeTeamSet(teamSet, index)) ??
+    (legacySet ? [legacySet] : undefined) ??
+    (fallbackSet ? [fallbackSet] : defaultTeamPairingData.teamSets);
+
+  const activeSetId =
+    input?.activeSetId && teamSets.some((teamSet) => teamSet.id === input.activeSetId)
+      ? input.activeSetId
+      : teamSets[0]?.id ?? null;
+
+  return {
+    adminUsername: input?.adminUsername ?? TEAM_PAIRING_ADMIN_USERNAME,
+    activeSetId,
+    teamSets,
+    content: {
+      ...defaultTeamPairingContent,
+      ...input?.content,
+    },
+  };
+};
+
+export const readLocalTeamPairingData = () => {
   if (typeof window === "undefined") {
-    return defaultTeamPairingData;
+    return normalizeData(defaultTeamPairingData);
   }
 
   const saved = window.localStorage.getItem(TEAM_PAIRING_STORAGE_KEY);
 
   if (!saved) {
-    return defaultTeamPairingData;
+    return normalizeData(defaultTeamPairingData);
   }
 
   try {
-    const parsed = JSON.parse(saved) as Partial<TeamPairingData>;
-
-    return {
-      ...defaultTeamPairingData,
-      ...parsed,
-      content: {
-        ...defaultTeamPairingContent,
-        ...parsed.content,
-      },
-      groups: parsed.groups ?? [],
-      rawList: parsed.rawList ?? "",
-      groupMode: parsed.groupMode ?? "2",
-      adminUsername: parsed.adminUsername ?? TEAM_PAIRING_ADMIN_USERNAME,
-    };
+    return normalizeData(JSON.parse(saved) as Partial<TeamPairingData>);
   } catch {
-    return defaultTeamPairingData;
+    return normalizeData(defaultTeamPairingData);
   }
 };
 
-export const saveTeamPairingData = (data: TeamPairingData) => {
+export const saveLocalTeamPairingData = (data: TeamPairingData) => {
   if (typeof window === "undefined") {
     return;
   }
 
-  window.localStorage.setItem(TEAM_PAIRING_STORAGE_KEY, JSON.stringify(data));
+  window.localStorage.setItem(TEAM_PAIRING_STORAGE_KEY, JSON.stringify(normalizeData(data)));
+};
+
+const toFirestoreValue = (value: unknown): FirestoreValue => {
+  if (value === null || value === undefined) {
+    return { nullValue: null };
+  }
+
+  if (Array.isArray(value)) {
+    return {
+      arrayValue: {
+        values: value.map((entry) => toFirestoreValue(entry)),
+      },
+    };
+  }
+
+  if (typeof value === "object") {
+    const fields = Object.entries(value as Record<string, unknown>).reduce<Record<string, FirestoreValue>>(
+      (result, [key, entry]) => {
+        result[key] = toFirestoreValue(entry);
+        return result;
+      },
+      {},
+    );
+
+    return {
+      mapValue: {
+        fields,
+      },
+    };
+  }
+
+  if (typeof value === "boolean") {
+    return { booleanValue: value };
+  }
+
+  if (typeof value === "number") {
+    return Number.isInteger(value)
+      ? { integerValue: String(value) }
+      : { doubleValue: value };
+  }
+
+  return { stringValue: String(value) };
+};
+
+const fromFirestoreValue = (value?: FirestoreValue): unknown => {
+  if (!value) {
+    return null;
+  }
+
+  if ("stringValue" in value) {
+    return value.stringValue;
+  }
+
+  if ("integerValue" in value) {
+    return Number(value.integerValue);
+  }
+
+  if ("doubleValue" in value) {
+    return value.doubleValue;
+  }
+
+  if ("booleanValue" in value) {
+    return value.booleanValue;
+  }
+
+  if ("nullValue" in value) {
+    return null;
+  }
+
+  if ("arrayValue" in value) {
+    return (value.arrayValue.values ?? []).map((entry) => fromFirestoreValue(entry));
+  }
+
+  if ("mapValue" in value) {
+    return Object.entries(value.mapValue.fields ?? {}).reduce<Record<string, unknown>>(
+      (result, [key, entry]) => {
+        result[key] = fromFirestoreValue(entry);
+        return result;
+      },
+      {},
+    );
+  }
+
+  return null;
+};
+
+const fetchFirestoreDocument = async () => {
+  const response = await fetch(FIRESTORE_DOCUMENT_URL, {
+    method: "GET",
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Unable to load team pairing data (${response.status}).`);
+  }
+
+  return response.json() as Promise<{ fields?: Record<string, FirestoreValue> }>;
+};
+
+const writeFirestoreDocument = async (data: TeamPairingData) => {
+  const response = await fetch(FIRESTORE_DOCUMENT_URL, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fields: {
+        payload: toFirestoreValue(normalizeData(data)),
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Unable to save team pairing data (${response.status}).`);
+  }
+};
+
+export const loadTeamPairingData = async () => {
+  const localData = readLocalTeamPairingData();
+
+  try {
+    const remoteDocument = await fetchFirestoreDocument();
+
+    if (!remoteDocument?.fields?.payload) {
+      return localData;
+    }
+
+    const remoteData = normalizeData(
+      fromFirestoreValue(remoteDocument.fields.payload) as Partial<TeamPairingData>,
+    );
+
+    saveLocalTeamPairingData(remoteData);
+    return remoteData;
+  } catch {
+    return localData;
+  }
+};
+
+export const saveTeamPairingData = async (data: TeamPairingData) => {
+  const normalized = normalizeData(data);
+
+  saveLocalTeamPairingData(normalized);
+  await writeFirestoreDocument(normalized);
 };
