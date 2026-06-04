@@ -1,88 +1,64 @@
-import { Link } from "react-router-dom";
-import { contactDetails, navLinks, siteName } from "@/content/siteContent";
+import { Facebook, Instagram, X } from "lucide-react";
+import { contactDetails } from "@/content/siteContent";
+import fpdiLogo from "../../fpdiblack.svg";
+
+const siteMap = [
+  { href: "/#about", label: "Our Mission" },
+  { href: "/about", label: "About Us" },
+  { href: "/hubs", label: "Universities" },
+  { href: "/apply", label: "How To Apply" },
+];
 
 export const SiteFooter = () => {
   return (
-    <footer className="mt-16 border-t border-border bg-primary text-primary-foreground">
-      <div className="container-narrow py-12 grid gap-10 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <img
-              src="/favicon.png"
-              alt="Adeleke University Policy Hub logo"
-              className="h-10 w-10 rounded-sm object-contain"
-            />
-            <span className="font-display font-semibold tracking-tight leading-tight text-sm sm:text-base">
-              {siteName}
-            </span>
+    <footer className="bg-neutral-700 text-primary-foreground">
+      <div className="container-narrow grid gap-10 py-12 md:grid-cols-2 md:py-16">
+        <div>
+          <img src={fpdiLogo} alt="FPDI" className="h-12 w-auto rounded-sm bg-background px-2 py-1 object-contain" />
+          <p className="mt-6 text-sm font-semibold">Email us:</p>
+          <a href={`mailto:${contactDetails.email}`} className="mt-2 block text-sm font-semibold hover:text-gold">
+            {contactDetails.email}
+          </a>
+          <a href="/hubs" className="mt-8 block text-sm font-semibold hover:text-gold">
+            Find Campuses
+          </a>
+          <div className="mt-8 flex gap-3">
+            <a className="footer-social" href="https://www.facebook.com/" aria-label="Facebook">
+              <Facebook size={16} />
+            </a>
+            <a className="footer-social" href="https://www.instagram.com/fpdiafrica/" aria-label="Instagram">
+              <Instagram size={16} />
+            </a>
+            <a className="footer-social" href="https://x.com/" aria-label="X">
+              <X size={16} />
+            </a>
           </div>
-          <p className="mt-4 max-w-md text-sm text-primary-foreground/70 leading-relaxed">
-            A student-led platform where students learn how to understand problems, build
-            practical policy ideas, and prepare for competitions like FPDI.
-          </p>
-          <p className="mt-5 text-xs uppercase tracking-[0.2em] text-primary-foreground/50">
-            Founded through the 2025 Winning Team
-          </p>
         </div>
 
         <div>
-          <h4 className="font-display text-sm font-semibold uppercase tracking-wider text-primary-foreground/90">
-            Navigate
-          </h4>
-          <ul className="mt-4 space-y-2 text-sm text-primary-foreground/70">
-            {navLinks.map((link) => (
-              <li key={link.to}>
-                <Link to={link.to} className="hover:text-primary-foreground">
+          <h3 className="font-display text-xl font-semibold">Explore</h3>
+          <ul className="mt-7 space-y-6 text-sm font-semibold">
+            {siteMap.map((link) => (
+              <li key={link.label}>
+                <a href={link.href} className="hover:text-gold">
                   {link.label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
         </div>
-
-        <div>
-          <h4 className="font-display text-sm font-semibold uppercase tracking-wider text-primary-foreground/90">
-            Contact
-          </h4>
-          <ul className="mt-4 space-y-2 text-sm text-primary-foreground/70">
-            <li>
-              <span className="block text-primary-foreground/50 text-xs uppercase tracking-wider">
-                Email
-              </span>
-              <a
-                href={`mailto:${contactDetails.leadEmail}`}
-                className="hover:text-primary-foreground underline underline-offset-4"
-              >
-                {contactDetails.leadEmail}
-              </a>
-            </li>
-            <li>
-              <span className="block text-primary-foreground/50 text-xs uppercase tracking-wider">
-                Support
-              </span>
-              <a
-                href={`mailto:${contactDetails.supportEmail}`}
-                className="hover:text-primary-foreground underline underline-offset-4"
-              >
-                {contactDetails.supportEmail}
-              </a>
-            </li>
-            <li>
-              <a
-                href={contactDetails.whatsappUrl}
-                className="hover:text-primary-foreground underline underline-offset-4"
-              >
-                Join the WhatsApp group
-              </a>
-            </li>
-          </ul>
-        </div>
       </div>
 
-      <div className="border-t border-primary-foreground/10">
-        <div className="container-narrow flex flex-col md:flex-row items-center justify-between gap-3 py-5 text-xs text-primary-foreground/50">
-          <p>© {new Date().getFullYear()} {siteName}. All rights reserved.</p>
-          <p>Founded through the 2025 Winning Team</p>
+      <div className="bg-primary">
+        <div className="container-narrow flex flex-col gap-4 py-5 text-sm font-semibold md:flex-row md:items-center md:justify-between">
+          <div className="font-display text-lg font-semibold uppercase tracking-[0.08em] text-primary-foreground">
+            FPDI <span className="text-gold">Africa</span>
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <a href="/about" className="hover:text-gold">About</a>
+            <a href="/apply" className="hover:text-gold">Apply</a>
+            <a href={`mailto:${contactDetails.email}`} className="hover:text-gold">Contact</a>
+          </div>
         </div>
       </div>
     </footer>

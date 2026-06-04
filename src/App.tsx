@@ -14,6 +14,10 @@ import FAQ from "./pages/FAQ.tsx";
 import About from "./pages/About.tsx";
 import TeamPairing from "./pages/TeamPairing.tsx";
 import AdminLog from "./pages/AdminLog.tsx";
+import HubAdmin from "./pages/HubAdmin.tsx";
+import HubsDirectory from "./pages/HubsDirectory.tsx";
+import AllHubs from "./pages/AllHubs.tsx";
+import HowToApply from "./pages/HowToApply.tsx";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +36,10 @@ const App = () => (
           <Route path="/submissions" element={<LearnSystem />} />
           <Route path="/team-pairing" element={<TeamPairing />} />
           <Route path="/adminlog" element={<AdminLog />} />
+          <Route path="/admin/hubs" element={<HubAdmin />} />
+          <Route path="/hubs" element={<HubsDirectory />} />
+          <Route path="/hubs/all" element={<AllHubs />} />
+          <Route path="/apply" element={<HowToApply />} />
           <Route path="/hub" element={<PolicyHub />} />
           <Route path="/policy-hub" element={<PolicyHub />} />
           <Route path="/faq" element={<FAQ />} />
