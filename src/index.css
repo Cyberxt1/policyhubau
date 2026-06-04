@@ -944,6 +944,29 @@
     line-height: 1;
   }
 
+  #apply {
+    min-height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  #apply > div {
+    min-width: 0;
+  }
+
+  #apply .meet-slideshow {
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  #apply .meet-slide {
+    max-width: 100%;
+    display: block;
+  }
+
   #apply .inline-flex {
     width: 100%;
     justify-content: center;
