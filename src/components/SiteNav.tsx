@@ -15,16 +15,20 @@ export const SiteNav = () => {
         </a>
         <a
           href="/hubs"
-          className="flex w-16 flex-col items-center justify-center gap-1 bg-secondary text-[11px] font-semibold transition-colors hover:bg-primary"
+          className="hidden w-16 flex-col items-center justify-center gap-1 bg-secondary text-[11px] font-semibold transition-colors hover:bg-primary md:flex"
         >
           <Search size={18} />
           <span>Search</span>
         </a>
       </div>
 
-      <div className="flex min-w-0 flex-1 items-center justify-between px-4 md:px-7">
+      <div className="flex min-w-0 flex-1 items-center justify-between px-3 md:px-7">
         <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Policy Hub home">
-          <img src={fpdiLogo} alt="FPDI" className="h-10 w-auto shrink-0 object-contain md:h-12" />
+          <img
+            src={fpdiLogo}
+            alt="FPDI"
+            className="h-12 max-w-[42vw] shrink-0 object-contain md:max-w-none"
+          />
         </Link>
 
         <nav className="flex shrink-0 items-center gap-3 font-display text-xs font-semibold uppercase tracking-[0.08em] text-primary md:gap-5 md:text-sm">
