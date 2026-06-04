@@ -27,7 +27,7 @@ export const SiteNav = () => {
           <img
             src={fpdiLogo}
             alt="FPDI"
-            className="h-12 max-w-[42vw] shrink-0 object-contain md:max-w-none"
+            className="h-11 max-w-[34vw] shrink-0 object-contain md:h-12 md:max-w-none"
           />
         </Link>
 
