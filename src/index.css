@@ -61,10 +61,20 @@
 @layer base {
   * { @apply border-border; }
   html { scroll-behavior: smooth; }
+  html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'DM Sans', system-ui, sans-serif;
     font-feature-settings: "ss01", "cv11";
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', system-ui, sans-serif;

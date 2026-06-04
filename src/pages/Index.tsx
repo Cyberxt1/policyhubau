@@ -50,7 +50,7 @@ const Index = () => {
 
       <section id="about" className="relative z-10 bg-background">
         <div className="container-narrow py-16 text-center md:py-20">
-          <h2 className="font-display text-3xl font-semibold uppercase tracking-[0.1em] text-primary md:text-4xl">
+          <h2 className="text-left font-display text-3xl font-semibold uppercase tracking-[0.1em] text-primary md:text-center md:text-4xl">
             We Are The Policy Hub Ambassadors
           </h2>
           <p className="mx-auto mt-8 max-w-5xl text-justify text-base leading-8 text-foreground md:text-center md:text-lg">
