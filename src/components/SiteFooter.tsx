@@ -1,4 +1,4 @@
-import { Facebook, Instagram, X } from "lucide-react";
+import { Instagram, Linkedin, X } from "lucide-react";
 import { contactDetails } from "@/content/siteContent";
 import fpdiLogo from "../../fpdiblack.svg";
 
@@ -23,13 +23,17 @@ export const SiteFooter = () => {
             Find Campuses
           </a>
           <div className="mt-8 flex gap-3">
-            <a className="footer-social" href="https://www.facebook.com/" aria-label="Facebook">
-              <Facebook size={16} />
+            <a
+              className="footer-social"
+              href="https://www.linkedin.com/company/future-pathways-development-initiative"
+              aria-label="LinkedIn"
+            >
+              <Linkedin size={16} />
             </a>
             <a className="footer-social" href="https://www.instagram.com/fpdiafrica/" aria-label="Instagram">
               <Instagram size={16} />
             </a>
-            <a className="footer-social" href="https://x.com/" aria-label="X">
+            <a className="footer-social" href="https://x.com/FPDIAfrica" aria-label="X">
               <X size={16} />
             </a>
           </div>
