@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import { Menu, Search } from "lucide-react";
-import fpdiLogo from "../../fpdiblack.svg";
 
 export const SiteNav = () => {
   return (
@@ -23,13 +21,7 @@ export const SiteNav = () => {
       </div>
 
       <div className="flex min-w-0 flex-1 items-center justify-between px-3 md:px-7">
-        <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Policy Hub home">
-          <img
-            src={fpdiLogo}
-            alt="FPDI"
-            className="h-11 max-w-[34vw] shrink-0 object-contain md:h-12 md:max-w-none"
-          />
-        </Link>
+        <div aria-hidden="true" />
 
         <nav className="flex shrink-0 items-center gap-3 font-display text-xs font-semibold uppercase tracking-[0.08em] text-primary md:gap-5 md:text-sm">
           <a href="/about" className="transition-colors hover:text-accent">
