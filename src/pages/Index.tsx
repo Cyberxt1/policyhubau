@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Instagram } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { landingCopy } from "@/content/siteContent";
-import heroImage from "../../container.jpg";
-import meetImage from "../../container (1).jpg";
-import meetImageTwo from "../../container (2).jpg";
-import meetImageThree from "../../container (3).jpg";
-import meetImageFour from "../../container (4).jpg";
-import meetImageFive from "../../container (5).jpg";
+import heroImage from "../../container.png";
+import meetImage from "../../container (1).png";
+import meetImageTwo from "../../container (2).png";
+import meetImageThree from "../../container (3).png";
+import meetImageFour from "../../container (4).png";
+import meetImageFive from "../../container (5).png";
 
 const meetSlides = [meetImage, meetImageTwo, meetImageThree, meetImageFour, meetImageFive];
 

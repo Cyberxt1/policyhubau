@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PageHeader } from "@/components/PageHeader";
-import heroImage from "../../container (2).jpg";
+import heroImage from "../../container (2).png";
 
 const pillars = [
   {
