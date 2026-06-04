@@ -83,8 +83,8 @@ export const campusDirectory = [
 
 export const contactDetails = {
   email: "contact@policychallenge.com",
-  whatsappUrl: "https://chat.whatsapp.com/F8H9Z2ZK4Hr9kvZLknCTcj",
-  applicationFormUrl: "https://forms.gle/replace-with-your-form-link",
+  whatsappUrl: "https://chat.whatsapp.com/DS62nGqYGkg8RFxprDsweV?mode=wwt",
+  applicationFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSeWHEDNCaGd9Mkzjzcw5FVV261Qy8WX_nnq7I-qEJ1Awx4Oeg/viewform",
 };
 
 export const landingBuilderDefaults = {
