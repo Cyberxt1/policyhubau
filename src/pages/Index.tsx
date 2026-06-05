@@ -65,7 +65,7 @@ const Index = () => {
         <div className="flex items-center justify-center px-6 py-16 md:justify-start md:px-14 lg:px-20">
           <div className="w-full text-center md:text-left">
             <h2 className="mx-auto max-w-xl font-display text-3xl font-semibold uppercase leading-tight tracking-[0.1em] text-primary md:mx-0 md:text-4xl">
-              Meet Your Policy Hub Ambassadors
+              The Policy Hub Ambassadors
             </h2>
             <div className="mt-8 flex flex-wrap justify-center gap-4 md:justify-start">
               <a
