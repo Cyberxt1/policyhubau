@@ -967,11 +967,6 @@
     display: block;
   }
 
-  #apply .inline-flex {
-    width: 100%;
-    justify-content: center;
-  }
-
   .timeline-step::after {
     display: none;
   }

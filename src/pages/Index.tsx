@@ -62,12 +62,12 @@ const Index = () => {
       </section>
 
       <section id="apply" className="relative z-10 grid min-h-[520px] bg-gold md:grid-cols-2">
-        <div className="flex items-center px-6 py-16 md:px-14 lg:px-20">
-          <div>
-            <h2 className="max-w-xl font-display text-3xl font-semibold uppercase leading-tight tracking-[0.1em] text-primary md:text-4xl">
+        <div className="flex items-center justify-center px-6 py-16 md:justify-start md:px-14 lg:px-20">
+          <div className="w-full text-center md:text-left">
+            <h2 className="mx-auto max-w-xl font-display text-3xl font-semibold uppercase leading-tight tracking-[0.1em] text-primary md:mx-0 md:text-4xl">
               Meet Your Policy Hub Ambassadors
             </h2>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap justify-center gap-4 md:justify-start">
               <a
                 href="/about"
                 className="inline-flex min-h-11 items-center border border-primary px-6 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
