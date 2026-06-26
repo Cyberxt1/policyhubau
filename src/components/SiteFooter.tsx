@@ -12,17 +12,17 @@ const siteMap = [
 export const SiteFooter = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="container-narrow grid gap-10 py-12 md:grid-cols-2 md:py-16">
+      <div className="container-narrow grid gap-6 py-8 md:grid-cols-2 md:gap-10 md:py-12">
         <div>
-          <img src={fpdiLogo} alt="FPDI" className="h-14 w-auto rounded-[18px] bg-background px-3 py-2 object-contain" />
-          <p className="mt-6 text-sm font-semibold">Email us:</p>
-          <a href={`mailto:${contactDetails.email}`} className="mt-2 block text-sm font-semibold hover:text-gold">
+          <img src={fpdiLogo} alt="FPDI" className="h-11 w-auto rounded-[16px] bg-background px-3 py-2 object-contain md:h-14" />
+          <p className="mt-4 text-xs font-semibold md:mt-6 md:text-sm">Email us:</p>
+          <a href={`mailto:${contactDetails.email}`} className="mt-2 block text-xs font-semibold hover:text-gold md:text-sm">
             {contactDetails.email}
           </a>
-          <a href="/hubs" className="mt-8 block text-sm font-semibold hover:text-gold">
+          <a href="/hubs" className="mt-5 block text-xs font-semibold hover:text-gold md:mt-8 md:text-sm">
             Find Campuses
           </a>
-          <div className="mt-8 flex gap-3">
+          <div className="mt-5 flex gap-3 md:mt-8">
             <a
               className="footer-social"
               href="https://www.linkedin.com/company/future-pathways-development-initiative"
@@ -39,12 +39,12 @@ export const SiteFooter = () => {
           </div>
         </div>
 
-        <div className="rounded-[24px] bg-white/[0.07] p-6">
-          <h3 className="font-display text-2xl font-semibold">Explore</h3>
-          <ul className="mt-7 grid gap-3 text-sm font-semibold">
+        <div className="rounded-[22px] bg-white/[0.07] p-5 md:rounded-[24px] md:p-6">
+          <h3 className="font-display text-xl font-semibold md:text-2xl">Explore</h3>
+          <ul className="mt-4 grid gap-1 text-xs font-semibold md:mt-7 md:gap-3 md:text-sm">
             {siteMap.map((link) => (
               <li key={link.label}>
-                <a href={link.href} className="block rounded-full px-1 py-2 hover:text-gold">
+                <a href={link.href} className="block rounded-full px-1 py-1.5 hover:text-gold md:py-2">
                   {link.label}
                 </a>
               </li>
@@ -54,8 +54,8 @@ export const SiteFooter = () => {
       </div>
 
       <div className="bg-primary">
-        <div className="container-narrow flex flex-col gap-4 py-5 text-sm font-semibold md:flex-row md:items-center md:justify-between">
-          <div className="font-display text-xl font-semibold text-primary-foreground">
+        <div className="container-narrow flex flex-col gap-3 py-4 text-xs font-semibold md:flex-row md:items-center md:justify-between md:text-sm">
+          <div className="font-display text-lg font-semibold text-primary-foreground md:text-xl">
             FPDI <span className="text-gold">Africa</span>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-2">

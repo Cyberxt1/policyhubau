@@ -46,7 +46,7 @@ const Index = () => {
         <img
           src={heroImage}
           alt="Students in an engaging policy session"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full scale-[1.02] object-cover blur-[1.5px]"
           decoding="sync"
           fetchPriority="high"
         />
