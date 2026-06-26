@@ -11,10 +11,10 @@ const siteMap = [
 
 export const SiteFooter = () => {
   return (
-    <footer className="bg-neutral-700 text-primary-foreground">
+    <footer className="bg-primary text-primary-foreground">
       <div className="container-narrow grid gap-10 py-12 md:grid-cols-2 md:py-16">
         <div>
-          <img src={fpdiLogo} alt="FPDI" className="h-12 w-auto rounded-sm bg-background px-2 py-1 object-contain" />
+          <img src={fpdiLogo} alt="FPDI" className="h-14 w-auto rounded-[18px] bg-background px-3 py-2 object-contain" />
           <p className="mt-6 text-sm font-semibold">Email us:</p>
           <a href={`mailto:${contactDetails.email}`} className="mt-2 block text-sm font-semibold hover:text-gold">
             {contactDetails.email}
@@ -39,12 +39,12 @@ export const SiteFooter = () => {
           </div>
         </div>
 
-        <div>
-          <h3 className="font-display text-xl font-semibold">Explore</h3>
-          <ul className="mt-7 space-y-6 text-sm font-semibold">
+        <div className="rounded-[24px] bg-white/[0.07] p-6">
+          <h3 className="font-display text-2xl font-semibold">Explore</h3>
+          <ul className="mt-7 grid gap-3 text-sm font-semibold">
             {siteMap.map((link) => (
               <li key={link.label}>
-                <a href={link.href} className="hover:text-gold">
+                <a href={link.href} className="block rounded-full px-1 py-2 hover:text-gold">
                   {link.label}
                 </a>
               </li>
@@ -55,7 +55,7 @@ export const SiteFooter = () => {
 
       <div className="bg-primary">
         <div className="container-narrow flex flex-col gap-4 py-5 text-sm font-semibold md:flex-row md:items-center md:justify-between">
-          <div className="font-display text-lg font-semibold uppercase tracking-[0.08em] text-primary-foreground">
+          <div className="font-display text-xl font-semibold text-primary-foreground">
             FPDI <span className="text-gold">Africa</span>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-2">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Instagram } from "lucide-react";
+import { ArrowRight, ExternalLink, Lightbulb, Megaphone, Route } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { landingCopy } from "@/content/siteContent";
+import { contactDetails } from "@/content/siteContent";
 import heroImage from "../../container.png";
 import meetImage from "../../container (1).png";
 import meetImageTwo from "../../container (2).png";
@@ -10,6 +10,24 @@ import meetImageFour from "../../container (4).png";
 import meetImageFive from "../../container (5).png";
 
 const meetSlides = [meetImage, meetImageTwo, meetImageThree, meetImageFour, meetImageFive];
+
+const featureItems = [
+  {
+    title: "Campus Advocacy",
+    icon: Megaphone,
+    description: "Cultivate deep student engagement in governance.",
+  },
+  {
+    title: "Civic Incubation",
+    icon: Lightbulb,
+    description: "Host debates, policy hackathons, and high-level panels.",
+  },
+  {
+    title: "Leadership Pipelines",
+    icon: Route,
+    description: "Connect high-achieving students with elite public sector career paths.",
+  },
+];
 
 const Index = () => {
   const [activeMeetSlide, setActiveMeetSlide] = useState(0);
@@ -24,89 +42,141 @@ const Index = () => {
 
   return (
     <SiteLayout>
-      <section className="simple-hero sticky top-16 z-0 isolate min-h-[330px] overflow-hidden bg-primary text-primary-foreground md:min-h-[410px]">
+      <section className="simple-hero relative z-0 isolate min-h-[calc(100svh-4rem)] overflow-hidden rounded-b-[2rem] bg-primary text-primary-foreground md:min-h-[680px] md:rounded-b-[3rem]">
         <img
           src={heroImage}
-          alt="Policy Hub ambassadors"
+          alt="Students in an engaging policy session"
           className="absolute inset-0 h-full w-full object-cover"
           decoding="sync"
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-primary/82 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/58 to-primary/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-primary/18 to-primary/92" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-primary via-primary/78 to-transparent" />
 
-        <div className="relative z-10 mx-auto flex min-h-[330px] w-full max-w-6xl items-end px-6 pb-14 pt-24 md:min-h-[410px] md:px-10 md:pb-20">
-          <div>
-            <p className="font-display text-sm font-semibold uppercase tracking-[0.12em] text-primary-foreground/90">
-              {landingCopy.eyebrow}
+        <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-6xl items-end px-5 pb-12 pt-24 md:min-h-[680px] md:px-10 md:pb-20">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">
+              Student Policy Network
             </p>
-            <h1 className="mt-3 max-w-5xl font-display text-4xl font-semibold uppercase leading-none tracking-[0.08em] text-primary-foreground md:text-6xl">
-              Policy Hub Ambassadors
+            <h1 className="mt-4 max-w-4xl font-display text-[3.1rem] font-semibold leading-[0.96] text-primary-foreground md:text-7xl">
+              Shape the Future. Lead the Change.
             </h1>
-            <span className="mt-7 block h-px w-24 bg-gold" />
+            <p className="mt-5 max-w-2xl text-base leading-7 text-primary-foreground/86 md:text-xl md:leading-8">
+              Join Africa's premier network of student leaders driving public policy,
+              governance innovation, and civic action across campuses.
+            </p>
           </div>
         </div>
       </section>
 
-      <section id="about" className="relative z-10 bg-background">
-        <div className="container-narrow py-16 text-center md:py-20">
-          <h2 className="text-left font-display text-3xl font-semibold uppercase tracking-[0.1em] text-primary md:text-center md:text-4xl">
-            We Are The Policy Hub Ambassadors
-          </h2>
-          <p className="mx-auto mt-8 max-w-5xl text-justify text-base leading-8 text-foreground md:text-center md:text-lg">
-            Policy Hub Ambassadors serve on campuses to spread interest, knowledge, and
-            leadership in public policy. The network helps students host conversations,
-            build community, and prepare for useful civic impact.
-          </p>
+      <section id="about" className="relative z-10 bg-background px-4 py-12 md:py-20">
+        <div className="container-narrow px-0">
+          <div className="grid gap-4 md:grid-cols-[0.95fr_1.05fr] md:items-stretch">
+            <article className="rounded-[24px] bg-white p-6 shadow-elevated md:p-9">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+                The Mission
+              </p>
+              <h2 className="mt-4 font-display text-3xl font-semibold leading-tight text-primary md:text-5xl">
+                Who Are the Policy Hub Ambassadors?
+              </h2>
+              <p className="mt-5 text-base leading-8 text-muted-foreground md:text-lg">
+                We empower exceptional student leaders with the tools, networks, and
+                training needed to bridge the gap between academic theory and real-world
+                policy solutions.
+              </p>
+            </article>
+
+            <article className="rounded-[24px] bg-white p-5 shadow-elevated md:p-8">
+              <div className="space-y-3">
+                {featureItems.map(({ title, icon: Icon, description }) => (
+                  <div
+                    key={title}
+                    className="flex gap-4 rounded-[20px] bg-background/80 p-4 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
+                  >
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-gold">
+                      <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-display text-xl font-semibold leading-tight text-primary">
+                        {title}
+                      </span>
+                      <span className="mt-1 block text-sm leading-6 text-muted-foreground">
+                        {description}
+                      </span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section id="apply" className="relative z-10 grid min-h-[520px] bg-gold md:grid-cols-2">
-        <div className="flex items-center justify-center px-6 py-16 md:justify-start md:px-14 lg:px-20">
-          <div className="w-full text-center md:text-left">
-            <h2 className="mx-auto max-w-xl font-display text-3xl font-semibold uppercase leading-tight tracking-[0.1em] text-primary md:mx-0 md:text-4xl">
-              The Policy Hub Ambassadors
+      <section id="apply" className="relative z-10 bg-background px-4 pb-14 md:pb-20">
+        <div className="container-narrow overflow-hidden rounded-[24px] bg-primary px-6 py-9 text-primary-foreground shadow-soft md:grid md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:px-10 md:py-12">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+              Applications
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-semibold leading-tight md:text-5xl">
+              Build the network your campus deserves.
             </h2>
-            <div className="mt-8 flex flex-wrap justify-center gap-4 md:justify-start">
+            <p className="mt-4 text-base leading-7 text-primary-foreground/78">
+              Join a high-trust circle of students creating serious civic conversations,
+              practical policy work, and visible campus leadership.
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <a
-                href="/about"
-                className="inline-flex min-h-11 items-center border border-primary px-6 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                href={contactDetails.applicationFormUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-gold px-6 text-sm font-bold text-primary transition-transform hover:-translate-y-0.5"
               >
-                About Us
+                Apply as an Ambassador
+                <ArrowRight size={17} aria-hidden="true" />
               </a>
               <a
-                href="/apply"
-                className="inline-flex min-h-11 items-center border border-primary px-6 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                href="/policy-hub"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary-foreground/34 px-6 text-sm font-semibold text-primary-foreground transition-colors hover:border-gold hover:text-gold"
               >
-                Become an Ambassador
+                Explore Our Impact
               </a>
             </div>
           </div>
-        </div>
-        <div className="meet-slideshow min-h-[360px] md:min-h-full">
-          {meetSlides.map((image, index) => (
-            <img
-              key={image}
-              src={image}
-              alt={index === 0 ? "Policy Hub ambassadors meeting" : ""}
-              className={`meet-slide ${index === activeMeetSlide ? "is-active" : ""}`}
-              loading={index === 0 ? "eager" : "lazy"}
-            />
-          ))}
+          <div className="meet-slideshow mt-8 min-h-[280px] rounded-[24px] md:mt-0 md:min-h-full">
+            {meetSlides.map((image, index) => (
+              <img
+                key={image}
+                src={image}
+                alt={index === 0 ? "Policy Hub ambassadors meeting" : ""}
+                className={`meet-slide ${index === activeMeetSlide ? "is-active" : ""}`}
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="relative z-10 bg-surface py-16 text-center md:py-20">
-        <a
-          href="https://www.instagram.com/fpdiafrica/"
-          className="inline-flex flex-col items-center gap-4 text-primary transition-colors hover:text-accent"
-          aria-label="Policy Hub Instagram"
-        >
-          <Instagram size={54} strokeWidth={1.8} />
-          <span className="font-display text-sm font-semibold uppercase tracking-[0.08em]">
-            Instagram
-          </span>
-        </a>
+      <section className="relative z-10 bg-background px-4 pb-16 md:pb-24">
+        <div className="container-narrow rounded-[24px] bg-white p-6 shadow-elevated md:flex md:items-center md:justify-between md:p-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+              Policy Challenge
+            </p>
+            <h2 className="mt-3 font-display text-2xl font-semibold text-primary md:text-4xl">
+              See the wider FPDI policy ecosystem.
+            </h2>
+          </div>
+          <a
+            href="https://policychallenge.com"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground md:mt-0"
+          >
+            Visit Policy Challenge
+            <ExternalLink size={16} aria-hidden="true" />
+          </a>
+        </div>
       </section>
     </SiteLayout>
   );

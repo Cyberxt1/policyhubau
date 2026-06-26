@@ -18,6 +18,7 @@ import HubAdmin from "./pages/HubAdmin.tsx";
 import HubsDirectory from "./pages/HubsDirectory.tsx";
 import AllHubs from "./pages/AllHubs.tsx";
 import HowToApply from "./pages/HowToApply.tsx";
+import OpenHouse from "./pages/OpenHouse.tsx";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/apply" element={<HowToApply />} />
           <Route path="/hub" element={<PolicyHub />} />
           <Route path="/policy-hub" element={<PolicyHub />} />
+          <Route path="/open-house" element={<OpenHouse />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />

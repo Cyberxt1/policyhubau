@@ -32,22 +32,22 @@ export const SiteNav = () => {
   }, [isMenuOpen]);
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 w-full items-stretch border-t-4 border-primary bg-background shadow-sm">
-      <div className="flex shrink-0 text-primary-foreground">
+    <header className="sticky top-0 z-40 flex h-16 w-full items-stretch bg-background/95 shadow-[0_4px_30px_rgba(0,0,0,0.03)] backdrop-blur">
+      <div className="flex shrink-0 pl-1 text-primary-foreground md:pl-2">
         <button
           type="button"
           aria-label="Open navigation menu"
           aria-expanded={isMenuOpen}
           aria-controls="site-sidebar"
           onClick={() => setIsMenuOpen(true)}
-          className="flex w-16 flex-col items-center justify-center gap-1 bg-primary text-[11px] font-semibold transition-colors hover:bg-secondary"
+          className="m-2 flex w-12 flex-col items-center justify-center gap-1 rounded-full bg-primary text-[11px] font-semibold transition-colors hover:bg-secondary"
         >
           <Menu size={19} />
           <span>Menu</span>
         </button>
         <a
           href="/hubs"
-          className="hidden w-16 flex-col items-center justify-center gap-1 bg-secondary text-[11px] font-semibold transition-colors hover:bg-primary md:flex"
+          className="m-2 hidden w-12 flex-col items-center justify-center gap-1 rounded-full bg-secondary text-[11px] font-semibold transition-colors hover:bg-primary md:flex"
         >
           <Search size={18} />
           <span>Search</span>
@@ -57,7 +57,7 @@ export const SiteNav = () => {
       <div className="flex min-w-0 flex-1 items-center justify-between px-3 md:px-7">
         <div aria-hidden="true" />
 
-        <nav className="flex shrink-0 items-center gap-3 font-display text-xs font-semibold uppercase tracking-[0.08em] text-primary md:gap-5 md:text-sm">
+        <nav className="flex shrink-0 items-center gap-3 text-xs font-semibold text-primary md:gap-5 md:text-sm">
           <a href="/about" className="transition-colors hover:text-accent">
             About Us
           </a>
@@ -81,12 +81,12 @@ export const SiteNav = () => {
       <aside
         id="site-sidebar"
         aria-hidden={!isMenuOpen}
-        className={`fixed left-0 top-0 z-50 flex h-svh w-[min(82vw,22rem)] flex-col bg-background shadow-2xl transition-transform duration-300 ease-out ${
+        className={`fixed left-0 top-0 z-50 m-3 flex h-[calc(100svh-1.5rem)] w-[min(82vw,22rem)] flex-col rounded-[24px] bg-background shadow-2xl transition-transform duration-300 ease-out ${
           isMenuOpen ? "translate-x-0" : "pointer-events-none -translate-x-full"
         }`}
       >
-        <div className="border-t-4 border-primary px-6 pb-5 pt-7">
-          <p className="font-display text-lg font-bold uppercase tracking-[0.08em] text-primary">
+        <div className="px-6 pb-5 pt-7">
+          <p className="font-display text-2xl font-bold text-primary">
             Policy Hub
           </p>
           <p className="mt-2 text-sm font-medium text-muted-foreground">Explore the ambassador network.</p>
@@ -99,7 +99,7 @@ export const SiteNav = () => {
               href={href}
               tabIndex={isMenuOpen ? 0 : -1}
               onClick={() => setIsMenuOpen(false)}
-              className="flex min-h-12 items-center gap-3 rounded-md px-3 font-display text-sm font-semibold uppercase tracking-[0.06em] text-primary transition-colors hover:bg-surface hover:text-accent"
+              className="flex min-h-12 items-center gap-3 rounded-[18px] px-3 text-sm font-semibold text-primary transition-colors hover:bg-surface hover:text-accent"
             >
               <Icon size={18} aria-hidden="true" />
               <span>{label}</span>

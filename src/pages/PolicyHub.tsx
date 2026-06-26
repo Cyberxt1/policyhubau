@@ -5,6 +5,7 @@ const sections = [
   {
     title: "What is the Policy Hub?",
     body: [
+      "Policy Hub is an initiative of FPDI designed to help students learn, discuss, and build around public policy.",
       "The Policy Hub is a student-led platform where members learn how to think about real problems and create solutions.",
       "It is not just for talking.",
       "It is for learning, building, and improving.",
@@ -57,8 +58,8 @@ const PolicyHub = () => {
     <SiteLayout>
       <PageHeader
         eyebrow="Policy Hub Guide"
-        title="Policy Hub Guide"
-        lead="How the Hub works. This page explains how the Policy Hub runs and what is expected from members."
+        title="Policy Hub"
+        lead="Policy Hub is an initiative of FPDI that helps students build knowledge, leadership, and community around public policy."
       />
 
       <section>

@@ -1,0 +1,26 @@
+<svg width="1080" height="1350" viewBox="0 0 1080 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1080" height="1350" fill="#14532D"/>
+  <text x="540" y="178" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="44" text-anchor="middle">Introducing...</text>
+  <g transform="translate(42 272) rotate(-1 498 420)">
+    <path d="M98 35C102 12 124 -4 148 0L934 0C958 0 979 17 983 41L1031 797C1035 827 1012 854 982 856L124 910C94 912 68 891 65 861L0 105C-3 72 65 43 98 35Z" fill="#222222" opacity="0.45"/>
+    <path d="M76 17C80 -6 102 -22 126 -18L907 -18C931 -18 952 -1 956 23L1003 771C1007 801 984 828 954 830L102 882C72 884 46 863 43 833L-20 86C-23 53 43 24 76 17Z" fill="#D1D5DB"/>
+    <path d="M109 44C113 21 135 5 159 9L876 9C900 9 920 26 924 50L964 730C968 760 945 786 915 788L136 835C106 837 80 816 77 786L20 110C17 77 76 52 109 44Z" fill="#F8FAFC"/>
+    <text x="512" y="324" fill="#14532D" font-family="Arial, Helvetica, sans-serif" font-size="152" font-weight="700" font-style="italic" text-anchor="middle">Open</text>
+    <text x="512" y="500" fill="#14532D" font-family="Arial, Helvetica, sans-serif" font-size="152" font-weight="700" font-style="italic" text-anchor="middle">House</text>
+    <path d="M493 407L555 369L617 407V511H574V452H536V511H493V407Z" fill="#F2B705"/>
+    <circle cx="555" cy="423" r="20" fill="#F8FAFC"/>
+    <path d="M454 626C484 577 537 553 601 559L575 608C532 608 497 625 470 657L454 626Z" fill="#F2B705"/>
+    <path d="M470 657C500 626 536 608 575 608L548 660C512 664 484 678 462 703L470 657Z" fill="#149B50"/>
+    <path d="M617 581H700V664H617V581Z" fill="#F2B705"/>
+    <path d="M617 664H700L650 729H566L617 664Z" fill="#149B50"/>
+    <text x="727" y="628" fill="#1F2937" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Future</text>
+    <text x="727" y="661" fill="#1F2937" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Pathways</text>
+    <text x="727" y="694" fill="#1F2937" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Development</text>
+    <text x="727" y="727" fill="#1F2937" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Initiative</text>
+  </g>
+  <g transform="translate(690 1132)">
+    <rect width="286" height="94" rx="47" fill="#F8FAFC"/>
+    <text x="70" y="58" fill="#14532D" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">SWIPE LEFT</text>
+    <path d="M223 48H262M246 32L262 48L246 64" stroke="#14532D" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
