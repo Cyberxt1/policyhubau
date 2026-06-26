@@ -164,7 +164,7 @@ const Index = () => {
               Policy Challenge
             </p>
             <h2 className="mt-3 font-display text-2xl font-semibold text-primary md:text-4xl">
-              See the wider FPDI policy ecosystem.
+              Have you Heard of the Policy Challenge.
             </h2>
           </div>
           <a
