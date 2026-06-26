@@ -69,29 +69,29 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="about" className="relative z-10 bg-background px-4 py-12 md:py-20">
-        <div className="container-narrow px-0">
-          <div className="grid gap-4 md:grid-cols-[0.95fr_1.05fr] md:items-stretch">
-            <article className="rounded-[24px] bg-white p-6 shadow-elevated md:p-9">
+      <section id="about" className="relative z-10 bg-background py-12 md:py-20">
+        <div className="container-narrow">
+          <div className="grid gap-8 md:grid-cols-[0.95fr_1.05fr] md:items-stretch">
+            <article className="md:rounded-[24px] md:bg-white md:p-9 md:shadow-elevated">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
                 The Mission
               </p>
-              <h2 className="mt-4 font-display text-3xl font-semibold leading-tight text-primary md:text-5xl">
-                Who Are the Policy Hub Ambassadors?
+              <h2 className="mt-4 font-display text-[2.65rem] font-semibold leading-[1.02] text-primary md:text-5xl">
+                Through the Policy Hub
               </h2>
-              <p className="mt-5 text-base leading-8 text-muted-foreground md:text-lg">
+              <p className="mt-5 block text-base leading-8 text-muted-foreground md:text-lg">
                 We empower exceptional student leaders with the tools, networks, and
                 training needed to bridge the gap between academic theory and real-world
                 policy solutions.
               </p>
             </article>
 
-            <article className="rounded-[24px] bg-white p-5 shadow-elevated md:p-8">
+            <article className="md:rounded-[24px] md:bg-white md:p-8 md:shadow-elevated">
               <div className="space-y-3">
                 {featureItems.map(({ title, icon: Icon, description }) => (
                   <div
                     key={title}
-                    className="flex gap-4 rounded-[20px] bg-background/80 p-4 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
+                    className="flex gap-4 rounded-[20px] bg-white p-4 shadow-[0_4px_30px_rgba(0,0,0,0.03)] md:bg-background/80"
                   >
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-gold">
                       <Icon size={19} strokeWidth={1.8} aria-hidden="true" />

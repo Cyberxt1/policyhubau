@@ -81,8 +81,8 @@ export const SiteNav = () => {
       <aside
         id="site-sidebar"
         aria-hidden={!isMenuOpen}
-        className={`fixed left-0 top-0 z-50 m-3 flex h-[calc(100svh-1.5rem)] w-[min(82vw,22rem)] flex-col rounded-[24px] bg-background shadow-2xl transition-transform duration-300 ease-out ${
-          isMenuOpen ? "translate-x-0" : "pointer-events-none -translate-x-full"
+        className={`fixed left-3 top-3 z-50 flex h-[calc(100svh-1.5rem)] w-[min(calc(100vw-1.5rem),22rem)] flex-col rounded-[24px] bg-background shadow-2xl transition-transform duration-300 ease-out ${
+          isMenuOpen ? "translate-x-0" : "pointer-events-none -translate-x-[calc(100%+1.5rem)]"
         }`}
       >
         <div className="px-6 pb-5 pt-7">
