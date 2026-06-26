@@ -112,8 +112,8 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="apply" className="relative z-10 bg-background px-4 pb-14 md:pb-20">
-        <div className="container-narrow overflow-hidden rounded-[24px] bg-primary px-6 py-9 text-primary-foreground shadow-soft md:grid md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:px-10 md:py-12">
+      <section id="apply" className="relative z-10 bg-background pb-14 md:px-4 md:pb-20">
+        <div className="mx-auto w-full max-w-none overflow-hidden rounded-none bg-primary px-6 py-9 text-primary-foreground shadow-soft md:grid md:max-w-6xl md:grid-cols-[0.9fr_1.1fr] md:gap-8 md:rounded-[24px] md:px-10 md:py-12">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
               Applications

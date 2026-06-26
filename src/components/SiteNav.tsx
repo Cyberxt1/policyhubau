@@ -1,4 +1,4 @@
-import { Compass, HelpCircle, Menu, Search, UserPlus, Users } from "lucide-react";
+import { Compass, HelpCircle, Menu, Search, UserPlus, Users, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const menuLinks = [
@@ -86,9 +86,20 @@ export const SiteNav = () => {
         }`}
       >
         <div className="px-6 pb-5 pt-7">
-          <p className="font-display text-2xl font-bold text-primary">
-            Policy Hub
-          </p>
+          <div className="flex items-start justify-between gap-4">
+            <p className="font-display text-2xl font-bold text-primary">
+              Policy Hub
+            </p>
+            <button
+              type="button"
+              aria-label="Close sidebar"
+              tabIndex={isMenuOpen ? 0 : -1}
+              onClick={() => setIsMenuOpen(false)}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-secondary"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
           <p className="mt-2 text-sm font-medium text-muted-foreground">Explore the ambassador network.</p>
         </div>
 
